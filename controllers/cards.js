@@ -42,7 +42,7 @@ module.exports.likeCard = (req, res, err) => {
     { $addToSet: { likes: req.user._id } },
     { new: true }
       .then((cards) => res.send({ data: cards }))
-      .catch(determineError(err, req.params._id))
+      .catch(determineError(err, req.params._id)),
   );
 };
 
