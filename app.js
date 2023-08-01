@@ -1,10 +1,6 @@
-
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-
-const cards = require('./routes/cards.js');
-const users = require('./routes/users.js');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -26,16 +22,5 @@ app.use((req, res, next) => {
   next();
 });
 
-
 app.use('/', require('./routes/cards'));
 app.use('/', require('./routes/users'));
-
-
-
-
-
-
-
-
-
-
