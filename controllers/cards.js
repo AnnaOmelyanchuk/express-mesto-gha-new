@@ -8,7 +8,7 @@ const determineError = (err, card, res) => {
   }
   if (!card) {
     res.status(404).send({ message: 'карточка не найдена', err });
-  return;
+    return;
   }
   res.status(500).send({ message: 'ошибка по умолчанию', err });
 };
@@ -30,7 +30,7 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res, err) => {
   Cards.findByIdAndRemove(
-    req.params._id
+    req.params._id,
   )
     .then((card) => res.send({ data: card }))
     .catch(determineError(err, req.params._id));
@@ -43,14 +43,14 @@ module.exports.likeCard = (req, res, err) => {
     { new: true }
       .then((cards) => res.send({ data: cards }))
       .catch(determineError(err, req.params._id))
-      );
+  );
 };
 
 module.exports.dislikeCard = (req, res, err) => {
   Cards.findByIdAndUpdate(
     req.params._id,
-    { avatar: req.body.avatar }
-    )
+    { avatar: req.body.avatar },
+  )
     .then((cards) => res.send({ data: cards }))
     .catch(determineError(err, req.params._id));
 };
