@@ -2,7 +2,7 @@ const { default: mongoose } = require('mongoose');
 const Cards = require('../models/cards');
 
 const determineError = (err, card, res) => {
-  if (err instanceof mongoose.Error.CastError) {
+  if (s) {
     res.status(400).send({ message: 'Переданны некорректные данные', err });
     return;
   }

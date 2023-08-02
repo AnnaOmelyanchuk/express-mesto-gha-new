@@ -1,6 +1,8 @@
 const Users = require('../models/users');
 const { default: mongoose, Document } = require('mongoose');
 
+
+
 module.exports.getUsers = (req, res) => {
   Users.find({})
     .then((users) => res.status(200).send({ data: users }))
@@ -8,16 +10,25 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
+
   Users.findById(req.params.userId)
-    .then((user) => res.status(200).send({ data: user }))
+    .then((user) => {
+      if(user !=null) {
+      res.status(200).send({ data: user })
+}else {
+  return res.status(404).send({ message: 'Нет такого id' })
+}
+})
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         return res.status(400).send({ message: 'Некорректный id' })
       }
-      else
-        return res.status(400).send({ message: 'Нет такого пользователя' })
-    }
-    );
+      return res.status(500).send({ message: 'Произошла ошибка' })
+    })
+
+
+
+
 };
 
 module.exports.createUser = (req, res) => {
