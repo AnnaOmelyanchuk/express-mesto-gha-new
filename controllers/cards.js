@@ -1,18 +1,6 @@
 const { default: mongoose } = require('mongoose');
 const Cards = require('../models/cards');
 
-const determineError = (err, card, res) => {
-  if (s) {
-    res.status(400).send({ message: 'Переданны некорректные данные', err });
-    return;
-  }
-  if (!card) {
-    res.status(404).send({ message: 'карточка не найдена', err });
-    return;
-  }
-  res.status(500).send({ message: 'ошибка по умолчанию', err });
-};
-
 module.exports.getCards = (req, res) => {
   Cards.find({})
     .then(() => res.status(200).send({ data: Cards }))
@@ -20,7 +8,6 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.createCard = (req, res) => {
-  console.log(req.user._id);
   Cards.create({
     name: req.body.name,
     link: req.body.link,
@@ -37,15 +24,6 @@ module.exports.createCard = (req, res) => {
     );
 };
 
-
-
-
-
-
-
-
-
-
 module.exports.deleteCard = (req, res, err) => {
   Cards.findByIdAndRemove(
     req.params._id,
@@ -54,21 +32,23 @@ module.exports.deleteCard = (req, res, err) => {
     .catch(determineError(err, req.params._id));
 };
 
-module.exports.likeCard = (req, res, err) => {
-  Cards.findByIdAndUpdate(
-    req.params._id,
-    { $addToSet: { likes: req.user._id } },
-    { new: true }
-      .then((cards) => res.send({ data: cards }))
-      .catch(determineError(err, req.params._id)),
-  );
+module.exports.likeCard = (req, res) => {
+  Cards.findByIdAndUpdate
+    (
+      req.params.cardId,
+      { $addToSet: { likes: req.user._id } },
+      { new: true },
+    )
+    .then((card) => res.status(200).send({ data: card }))
+    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }))
 };
 
-module.exports.dislikeCard = (req, res, err) => {
+module.exports.dislikeCard = (req, res) => {
   Cards.findByIdAndUpdate(
-    req.params._id,
-    { avatar: req.body.avatar },
+    req.params.cardId,
+    { $pull: { likes: req.user._id } },
+    { new: true },
   )
-    .then((cards) => res.send({ data: cards }))
+    .then((card) => res.status(200).send({ data: card }))
     .catch(determineError(err, req.params._id));
 };
