@@ -1,17 +1,12 @@
 const Users = require('../models/users');
 const { default: mongoose } = require('mongoose');
 
-const determineError = (user) => {
+const determineError = () => {
   if (err instanceof mongoose.Error.CastError) {
     res.status(400).send({ message: 'Переданны некорректные данные'})
     return;
   }
-  if (!user) {
-    res.status(404).send({ message: 'карточка не найдена'})
-    return;
-  }
   res.status(500).send({ message: 'ошибка по умолчанию'})
-  return;
 };
 
 module.exports.getUsers = (req, res, err) => {
@@ -38,8 +33,9 @@ module.exports.createUser = (req, res) => {
     avatar: req.body.avatar,
   })
     .then((users) => res.status(200).send({ data: users }))
-    //.catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
-    .catch(() => determineError());
+    .catch(err => determineError);
+   // .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+  //  .catch(err => determineError);
 };
 
 module.exports.updateUserInfo = (req, res, err) => {
