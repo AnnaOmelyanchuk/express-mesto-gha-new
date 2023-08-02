@@ -39,8 +39,18 @@ module.exports.likeCard = (req, res) => {
       { $addToSet: { likes: req.user._id } },
       { new: true },
     )
-    .then((card) => res.status(200).send({ data: card }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }))
+    .then((card) => {
+      if (card != null) {
+        res.status(200).send({ data: card })
+      } else {
+        return res.status(404).send({ message: 'Нет такого id' })
+      }})
+    .catch((err) => {
+      if (err instanceof mongoose.Error.CastError) {
+        return res.status(400).send({ message: 'Некорректный id' })
+      }
+      return res.status(500).send({ message: 'Произошла ошибка' })
+    })
 };
 
 module.exports.dislikeCard = (req, res) => {
