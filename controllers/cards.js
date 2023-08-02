@@ -59,6 +59,16 @@ module.exports.dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
-    .then((card) => res.status(200).send({ data: card }))
-    .catch(determineError(err, req.params._id));
+  .then((card) => {
+    if (card != null) {
+      res.status(200).send({ data: card })
+    } else {
+      return res.status(404).send({ message: 'Нет такого id' })
+    }})
+  .catch((err) => {
+    if (err instanceof mongoose.Error.CastError) {
+      return res.status(400).send({ message: 'Некорректный id' })
+    }
+    return res.status(500).send({ message: 'Произошла ошибка' })
+  })
 };
