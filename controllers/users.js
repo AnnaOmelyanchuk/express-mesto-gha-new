@@ -12,15 +12,15 @@ module.exports.getUserById = (req, res) => {
     res.send(`Такого пользователя не существует`);
     return;
   }*/
-  //const { name, about, avatar } = users[req.params._id];
-  Users.findById(req.params._id)
-    .then((user) => res.status(200).send(user))
+
+  Users.findById(req.params.userId)
+    .then((user) => res.status(200).send({data: user}))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(400).send({ message: 'Произошла ошибка' })
+        return res.status(400).send({ message: 'Произошла ошибка1' })
       }
       else
-        return res.status(500).send({ message: 'Произошла ошибка' })
+        return res.status(500).send({ message: 'Произошла ошибка2' })
     }
     );
 };
