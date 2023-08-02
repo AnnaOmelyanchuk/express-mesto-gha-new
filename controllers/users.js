@@ -31,17 +31,14 @@ module.exports.getUserById = (req, res, err) => {
     .catch(determineError(err, req.params._id));
 };
 
-module.exports.createUser = (req, res, err) => {
-  try {
-    await
-    Users.create({
-      name: req.body.name,
-      about: req.body.about,
-      avatar: req.body.avatar,
-    })
-      .then((users) => res(201).send({ data: users }))
-  }
-  catch { (determineError(err, req.params._id)) };
+module.exports.createUser = (req, res) => {
+  Users.create({
+    name: req.body.name,
+    about: req.body.about,
+    avatar: req.body.avatar,
+  })
+    .then((users) => res(201).send({ data: users }))
+    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.updateUserInfo = (req, res, err) => {
