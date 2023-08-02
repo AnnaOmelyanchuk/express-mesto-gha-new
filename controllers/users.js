@@ -19,7 +19,7 @@ module.exports.getUserById = (req, res) => {
       if (err instanceof mongoose.Error.CastError) {
         return res.status(400).send({ message: 'Некорректный id' })
       }
-      if (err instanceof mongoose.DocumentNotFoundError) {
+      if (!users[req.params.id]) {
         return res.status(404).send({ message: 'Пользователя нет' })
       }
       else
