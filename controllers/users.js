@@ -14,7 +14,7 @@ module.exports.getUserById = (req, res) => {
   }*/
   const { name, about, avatar } = users[req.params._id];
   Users.findById(req.params._id)
-    .then((users) => res.status(200).send({ name, about, avatar }))
+    .then((users) => res.status(200).send({ data: { name, about, avatar } }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return res.status(400).send({ message: 'Произошла ошибка' })
