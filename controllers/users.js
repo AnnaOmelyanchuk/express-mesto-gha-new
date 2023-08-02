@@ -26,8 +26,8 @@ module.exports.createUser = (req, res) => {
   })
     .then((users) => res.status(200).send({ data: users }))
     .catch((err) => {
-      if (true
-        // err instanceof mongoose.Error.CastError
+      if (
+        err instanceof mongoose.Error.CastError
       )
         return res.status(500).send({ message: 'Произошла ошибка' })
 
