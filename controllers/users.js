@@ -1,14 +1,6 @@
 const Users = require('../models/users');
 const { default: mongoose } = require('mongoose');
 
-const determineError = () => {
-  if (err instanceof mongoose.Error.CastError) {
-    res.status(400).send({ message: 'Переданны некорректные данные'})
-    return;
-  }
-  res.status(500).send({ message: 'ошибка по умолчанию'})
-};
-
 module.exports.getUsers = (req, res, err) => {
   Users.find({})
     .then((users) => res.status(200).send({ data: users }))
@@ -33,9 +25,13 @@ module.exports.createUser = (req, res) => {
     avatar: req.body.avatar,
   })
     .then((users) => res.status(200).send({ data: users }))
-    .catch(err => determineError);
-   // .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
-  //  .catch(err => determineError);
+    .catch((err) => {
+      if (err instanceof mongoose.Error.CastError) {
+        res.status(400).send({ message: 'Переданны некорректные данные', err });
+      } else {
+        res.status(500).send({ message: 'Произошла ошибка' })
+      });
+
 };
 
 module.exports.updateUserInfo = (req, res, err) => {
