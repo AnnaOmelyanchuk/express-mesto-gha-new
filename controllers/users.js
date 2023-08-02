@@ -46,9 +46,11 @@ module.exports.createUser = (req, res) => {
 };
 
 module.exports.updateUserInfo = (req, res) => {
-  console.log(req.body.name);
-  Users.findByIdAndUpdate(req.user._id, { name: req.body.name, about: req.body.about, avatar: req.body.avatar })
-    .then((user) => res.status(200).send({ data: user }))
+  const { name, about } = req.body;
+  Users.findByIdAndUpdate(req.user._id, {name, about }, {new: true})
+    .then((user) => {
+      res.status(200).send({ data: user })
+    })
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return res.status(400).send({ message: 'Ошибка в данных' })
@@ -58,7 +60,6 @@ module.exports.updateUserInfo = (req, res) => {
     }
     );
 };
-
 
 module.exports.updateUserAvatar = (req, res, err) => {
   Users.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar })
