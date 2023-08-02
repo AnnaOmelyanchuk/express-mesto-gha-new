@@ -59,8 +59,15 @@ module.exports.updateUserInfo = (req, res) => {
     );
 };
 
-module.exports.updateUserAvatar = (req, res, err) => {
-  Users.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar })
-    .then((user) => res.send({ data: user }))
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+module.exports.updateUserAvatar = (req, res) => {
+  Users.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar }, { new: true, runValidators: true })
+  then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        return res.status(400).send({ message: 'Ошибка в данных' })
+      }
+      else
+        return res.status(500).send({ message: 'Произошла ошибка' })
+    }
+    );
 };
