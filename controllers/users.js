@@ -47,10 +47,8 @@ module.exports.createUser = (req, res) => {
 
 module.exports.updateUserInfo = (req, res) => {
   const { name, about } = req.body;
-  Users.findByIdAndUpdate(req.user._id, {name, about }, {new: true})
-    .then((user) => {
-      res.status(200).send({ data: user })
-    })
+  Users.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         return res.status(400).send({ message: 'Ошибка в данных' })
