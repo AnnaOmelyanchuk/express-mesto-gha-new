@@ -25,7 +25,7 @@ module.exports.createUser = (req, res) => {
     avatar: req.body.avatar,
   })
     .then((users) => res.status(200).send({ data: users }))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch((err) => { if (err instanceof mongoose.Error.CastError) { res.status(500).send({ message: 'Произошла ошибка' }) } });
 
 };
 
