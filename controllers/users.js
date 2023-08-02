@@ -8,19 +8,14 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  if (!users[req.params.id]) {
-    return res.status(404).send({ message: 'Пользователя нет' })
-  }
-
   Users.findById(req.params.userId)
     .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         return res.status(400).send({ message: 'Некорректный id' })
       }
-
       else
-        return res.status(500).send({ message: 'Произошла ошибка' })
+        return res.status(400).send({ message: 'Нет такого пользователя' })
     }
     );
 };
