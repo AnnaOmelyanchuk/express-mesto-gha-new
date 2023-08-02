@@ -7,15 +7,22 @@ module.exports.getUsers = (req, res) => {
     .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 
-module.exports.getUserById = (req, res, err) => {
-  if (!users[req.params.id]) {
+module.exports.getUserById = (req, res) => {
+  /*if (!users[req.params.id]) {
     res.send(`Такого пользователя не существует`);
     return;
-  }
+  }*/
   const { name, about, avatar } = users[req.params.id];
-
-  res.send({ name, about, avatar })
-  .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+  Users.findById(req.params._id)
+    .then((users) => res.status(200).send({ name, about, avatar }))
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        return res.status(400).send({ message: 'Произошла ошибка' })
+      }
+      else
+        return res.status(500).send({ message: 'Произошла ошибка' })
+    }
+    );
 };
 
 module.exports.createUser = (req, res) => {
