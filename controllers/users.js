@@ -12,7 +12,7 @@ module.exports.getUserById = (req, res) => {
     res.send(`Такого пользователя не существует`);
     return;
   }*/
-  const { name, about, avatar } = users[req.params.id];
+  const { name, about, avatar } = users[req.params._id];
   Users.findById(req.params._id)
     .then((users) => res.status(200).send({ name, about, avatar }))
     .catch((err) => {
