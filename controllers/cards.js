@@ -26,10 +26,20 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res, err) => {
   Cards.findByIdAndRemove(
-    req.params._id,
+    req.params.cardId,
   )
-    .then((card) => res.send({ data: card }))
-    .catch(determineError(err, req.params._id));
+  .then((card) => {
+    if (card != null) {
+      res.status(200).send({ data: card })
+    } else {
+      return res.status(404).send({ message: 'Нет такого id' })
+    }})
+  .catch((err) => {
+    if (err instanceof mongoose.Error.CastError) {
+      return res.status(400).send({ message: 'Некорректный id' })
+    }
+    return res.status(500).send({ message: 'Произошла ошибка' })
+  })
 };
 
 module.exports.likeCard = (req, res) => {
