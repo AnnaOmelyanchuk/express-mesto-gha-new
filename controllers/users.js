@@ -14,13 +14,16 @@ module.exports.getUserById = (req, res) => {
   }*/
 
   Users.findById(req.params.userId)
-    .then((user) => res.status(200).send({data: user}))
+    .then((user) => res.status(200).send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         return res.status(400).send({ message: 'Некорректный id' })
       }
+      if (err instanceof mongoose.DocumentNotFoundError) {
+        return res.status(404).send({ message: 'Пользователя нет' })
+      }
       else
-        return res.status(500).send({ message: 'Произошла ошибка2' })
+        return res.status(500).send({ message: 'Произошла ошибка' })
     }
     );
 };
