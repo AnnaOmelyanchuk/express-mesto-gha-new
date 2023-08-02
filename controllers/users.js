@@ -16,8 +16,8 @@ module.exports.getUserById = (req, res) => {
   Users.findById(req.params.userId)
     .then((user) => res.status(200).send({data: user}))
     .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(400).send({ message: 'Произошла ошибка1' })
+      if (err instanceof mongoose.Error.CastError) {
+        return res.status(400).send({ message: 'Некорректный id' })
       }
       else
         return res.status(500).send({ message: 'Произошла ошибка2' })
