@@ -13,22 +13,18 @@ module.exports.getUserById = (req, res) => {
 
   Users.findById(req.params.userId)
     .then((user) => {
-      if(user !=null) {
-      res.status(200).send({ data: user })
-}else {
-  return res.status(404).send({ message: 'Нет такого id' })
-}
-})
+      if (user != null) {
+        res.status(200).send({ data: user })
+      } else {
+        return res.status(404).send({ message: 'Нет такого id' })
+      }
+    })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         return res.status(400).send({ message: 'Некорректный id' })
       }
       return res.status(500).send({ message: 'Произошла ошибка' })
     })
-
-
-
-
 };
 
 module.exports.createUser = (req, res) => {
@@ -40,7 +36,7 @@ module.exports.createUser = (req, res) => {
     .then((users) => res.status(200).send({ data: users }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(400).send({ message: 'Произошла ошибка' })
+        return res.status(400).send({ message: 'Ошибка в данных' })
       }
       else
         return res.status(500).send({ message: 'Произошла ошибка' })
@@ -49,11 +45,20 @@ module.exports.createUser = (req, res) => {
 
 };
 
-module.exports.updateUserInfo = (req, res, err) => {
-  Users.findByIdAndUpdate(req.params._id, { name: req.body.name, about: req.body.about })
-    .then((user) => res.send({ data: user }))
-    .catch(err => res.status(500).send({ message: 'Произошла ошибка' }));
+module.exports.updateUserInfo = (req, res) => {
+  console.log(req.body.name);
+  Users.findByIdAndUpdate(req.user._id, { name: req.body.name, about: req.body.about, avatar: req.body.avatar })
+    .then((user) => res.status(200).send({ data: user }))
+    .catch((err) => {
+      if (err instanceof mongoose.Error.ValidationError) {
+        return res.status(400).send({ message: 'Ошибка в данных' })
+      }
+      else
+        return res.status(500).send({ message: 'Произошла ошибка' })
+    }
+    );
 };
+
 
 module.exports.updateUserAvatar = (req, res, err) => {
   Users.findByIdAndUpdate(req.params._id, { avatar: req.body.avatar })
