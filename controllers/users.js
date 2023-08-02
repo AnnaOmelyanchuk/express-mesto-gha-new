@@ -1,5 +1,5 @@
 const Users = require('../models/users');
-const { default: mongoose } = require('mongoose');
+const { default: mongoose, Document } = require('mongoose');
 
 module.exports.getUsers = (req, res, err) => {
   Users.find({})
@@ -26,10 +26,12 @@ module.exports.createUser = (req, res) => {
   })
     .then((users) => res.status(200).send({ data: users }))
     .catch((err) => {
-      if (true
-       // err instanceof mongoose.Error.CastError
-        ) {
+      if (
+         err instanceof mongoose.Error.CastError
+      ) {
         res.status(500).send({ message: 'Произошла ошибка' })
+      } else {
+        res.status(DocumentNotFoundError).send({ message: 'Пользователь не найден' })
       }
     }
     );
