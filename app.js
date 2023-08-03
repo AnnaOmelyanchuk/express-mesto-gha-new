@@ -21,13 +21,11 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-
-
 app.use('/', require('./routes/cards'));
 app.use('/', require('./routes/users'));
+
 app.use((req, res) => {
   res.status(404).json({
-    message: 'НЕ туда :(('
-  })
-})
-
+    message: 'НЕ туда :((',
+  });
+});
