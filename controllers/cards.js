@@ -28,7 +28,7 @@ module.exports.deleteCard = (req, res) => {
   )
     .then((card) => {
       if (card != null) {
-        res.status(200).send({ data: card });
+        return res.send({ data: card });
       }
       return res.status(404).send({ message: 'Нет такого id' });
     })
@@ -48,7 +48,7 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (card != null) {
-        res.status(200).send({ data: card });
+        return res.status(200).send({ data: card });
       }
       return res.status(404).send({ message: 'Нет такого id' });
     })
@@ -68,7 +68,7 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (card != null) {
-        res.status(200).send({ data: card });
+        return res.status(200).send({ data: card });
       }
       return res.status(404).send({ message: 'Нет такого id' });
     })

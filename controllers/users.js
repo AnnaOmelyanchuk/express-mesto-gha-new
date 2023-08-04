@@ -11,7 +11,7 @@ module.exports.getUserById = (req, res) => {
   Users.findById(req.params.userId)
     .then((user) => {
       if (user != null) {
-        res.status(200).send({ data: user });
+        return res.status(200).send({ data: user });
       }
       return res.status(404).send({ message: 'Нет такого id' });
     })
