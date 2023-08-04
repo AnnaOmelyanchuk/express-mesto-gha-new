@@ -8,7 +8,7 @@ const ServerError = 500;
 module.exports.getCards = (req, res) => {
   Cards.find({})
     .then((cards) => res.send({ data: cards }))
-    .catch((err) => res.status(ServerError).send({ message: 'Произошла ошибка', err }));
+    .catch(() => res.status(ServerError).send({ message: 'Произошла ошибка' }));
 };
 
 module.exports.createCard = (req, res) => {
