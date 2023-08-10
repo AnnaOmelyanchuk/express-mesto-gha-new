@@ -27,12 +27,16 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
+  const userId = req.user._id;
   Cards.findByIdAndRemove(
     req.params.cardId,
   )
     .then((card) => {
       if (card) {
-        return res.send({ data: card });
+        if (card.owner._id === userId) {
+          return res.send({ data: card });
+        }
+        return res.status(403).send({ message: 'Не твоя карточка' });
       }
       return res.status(NotFoundError).send({ message: 'Нет такого id' });
     })

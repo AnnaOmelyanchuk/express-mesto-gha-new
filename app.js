@@ -1,17 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+require('dotenv').config();
 
 const { PORT = 3000 } = process.env;
 const app = express();
 app.listen(PORT);
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '64c7a736f893c931ba5e5ed9',
-  };
-  next();
-});
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
