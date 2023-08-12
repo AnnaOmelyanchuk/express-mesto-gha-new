@@ -49,7 +49,7 @@ module.exports.createUser = (req, res) => {
       }))
       .then((user) => res.send({ data: user }))
       .catch((err) => {
-        if (err.name === 'MongoError' && err.code === 11000) {
+        if (err.name === 'MongoError' || err.code === 11000) {
           res.status(409).send({ message: 'Указанный email уже занят' });
           return;
         }
