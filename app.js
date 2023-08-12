@@ -19,6 +19,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
 app.use('/', require('./routes/cards'));
 app.use('/', require('./routes/users'));
 
+app.use(errors());
+
 app.use((err, req, res, next) => {
   res.send({ message: err.message });
 });
