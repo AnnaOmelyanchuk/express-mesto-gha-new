@@ -31,7 +31,6 @@ const userSchema = new mongoose.Schema({
       validator: (v) => /^(http|https):\/\/[^ "]+$/.test(v),
       message: 'ошибка в ссылке',
     },
-
     password: {
       type: String,
       required: [true, 'Обязательное поле'],

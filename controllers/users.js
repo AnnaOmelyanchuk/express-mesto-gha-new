@@ -5,9 +5,9 @@ const Users = require('../models/users');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-const BadRequesError = 400;
-const NotFoundError = 404;
-const ServerError = 500;
+const BadRequesError = require('../error/bad_request_error_400');
+const NotFoundError = require('../error/not_found_error_404');
+const ServerError = require('../error/server_error_500');
 
 module.exports.getUsers = (req, res) => {
   Users.find({})
@@ -21,7 +21,7 @@ module.exports.getUserById = (req, res) => {
       if (user) {
         return res.send({ data: user });
       }
-      return res.status(NotFoundError).send({ message: 'Нет такого id' });
+      return res.status(new NotFoundError().statusCode).send({ message: 'Нет такого id' });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
@@ -35,28 +35,29 @@ module.exports.createUser = (req, res) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
-
   if (!password) {
-    res.status(400).send({ message: 'Пароль не введен' });
+    res.status(new BadRequesError().statusCode).send({ message: 'Пароль не введен' });
   } else {
     bcrypt.hash(req.body.password, 10)
-      .then((hash) => Users.create({
-        name,
-        about,
-        avatar,
-        email,
-        password: hash,
-      }))
-      .then((user) => res.send({ data: user }))
+      .then((hash) => {
+        Users.create({
+          name,
+          about,
+          avatar,
+          email,
+          password: hash,
+        });
+      })
+      .then((user) => { res.send({ data: user }); })
       .catch((err) => {
         if (err.name === 'MongoError' || err.code === 11000) {
           res.status(409).send({ message: 'Указанный email уже занят' });
           return;
         }
         if (err instanceof mongoose.Error.ValidationError) {
-          res.status(BadRequesError).send({ message: 'Ошибка в данных' });
+          res.status(new BadRequesError().statusCode).send({ message: 'Ошибка в данных' });
         }
-        res.status(ServerError).send({ message: 'Произошла ошибка' });
+        res.status(new ServerError().statusCode).send({ message: 'Произошла ошибка' });
       });
   }
 };
@@ -67,9 +68,9 @@ module.exports.updateUserInfo = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(BadRequesError).send({ message: 'Ошибка в данных' });
+        return res.status(new BadRequesError().statusCode).send({ message: 'Ошибка в данных' });
       }
-      return res.status(ServerError).send({ message: 'Произошла ошибка' });
+      return res.status(new ServerError().statusCode).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -82,9 +83,9 @@ module.exports.updateUserAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(BadRequesError).send({ message: 'Ошибка в данных' });
+        return res.status(new BadRequesError().statusCode).send({ message: 'Ошибка в данных' });
       }
-      return res.status(ServerError).send({ message: 'Произошла ошибка' });
+      return res.status(new ServerError().statusCode).send({ message: 'Произошла ошибка' });
     });
 };
 
@@ -103,15 +104,15 @@ module.exports.getUser = (req, res) => {
   Users.findById(req.params.userId)
     .then((user) => {
       if (!user) {
-        res.status(404).send({ message: `Нет такого пользователя - ${req.params.userId}` });
+        res.status(new NotFoundError().statusCode).send({ message: `Нет такого пользователя - ${req.params.userId}` });
         return;
       }
       res.send({ data: user });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(BadRequesError).send({ message: 'Некорректный id' });
+        return res.status(new BadRequesError().statusCode).send({ message: 'Некорректный id' });
       }
-      return res.status(ServerError).send({ message: 'Произошла ошибка' });
+      return res.status(new ServerError().statusCode).send({ message: 'Произошла ошибка' });
     });
 };
