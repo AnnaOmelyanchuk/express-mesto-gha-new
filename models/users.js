@@ -1,40 +1,39 @@
 const mongoose = require('mongoose');
-const validatorUrl = require('validator').isURL;
-const validatorEmail = require('validator').isEmail;
+const validators = require('mongoose-validators');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
-  name: {
+  name:
+  {
     type: String,
     default: 'Жак-Ив Кусто',
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'минимальное количество символов - 2'],
+    maxlength: [30, 'максимальное количество символов - 30'],
   },
   about: {
     type: String,
     default: 'Исследователь',
-    minlength: 2,
-    maxlength: 30,
+    minlength: [2, 'минимальное количество символов - 2'],
+    maxlength: [30, 'максимальное количество символов - 30'],
   },
+  email: {
+    type: String,
+    required: [true, 'Обязательное поле'],
+    validate: validators.isEmail(),
+    unique: true,
+  },
+
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
-      validator: (v) => validatorUrl(v),
+      validator: (v) => /^(http|https):\/\/[^ "]+$/.test(v),
       message: 'ошибка в ссылке',
     },
-    email: {
-      type: String,
-      required: true,
-      validate: {
-        validator: (v) => validatorEmail(v),
-        message: 'ошибка в e-mail',
-      },
-      unique: true, // check
-    },
+
     password: {
       type: String,
-      required: true,
+      required: [true, 'Обязательное поле'],
       select: false,
     },
   },
@@ -42,12 +41,13 @@ const userSchema = new mongoose.Schema({
 
 // eslint-disable-next-line func-names
 userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).select('+password')
+  return this.findOne({ email })
+    .select('+password')
     .then((user) => {
       if (!user) {
         return Promise.reject(new Error('Неправильные почта или пароль'));
       }
-
+      console.log(user, password, user.password);
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {

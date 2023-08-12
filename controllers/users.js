@@ -33,23 +33,32 @@ module.exports.getUserById = (req, res) => {
 
 module.exports.createUser = (req, res) => {
   const {
-    name, about, avatar, email,
+    name, about, avatar, email, password,
   } = req.body;
-  bcrypt.hash(req.body.password, 10)
-    .then((hash) => Users.create({
-      name,
-      about,
-      avatar,
-      email,
-      password: hash,
-    }))
-    .then((users) => res.send({ data: users }))
-    .catch((err) => {
-      if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(BadRequesError).send({ message: 'Ошибка в данных' });
-      }
-      return res.status(ServerError).send({ message: 'Произошла ошибка' });
-    });
+
+  if (!password) {
+    res.status(400).send({ message: 'Пароль не введен' });
+  } else {
+    bcrypt.hash(req.body.password, 10)
+      .then((hash) => Users.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      }))
+      .then((user) => res.send({ data: user }))
+      .catch((err) => {
+        if (err.name === 'MongoError' && err.code === 11000) {
+          res.status(409).send({ message: 'Указанный email уже занят' });
+          return;
+        }
+        if (err instanceof mongoose.Error.ValidationError) {
+          res.status(BadRequesError).send({ message: 'Ошибка в данных' });
+        }
+        res.status(ServerError).send({ message: 'Произошла ошибка' });
+      });
+  }
 };
 
 module.exports.updateUserInfo = (req, res) => {
@@ -79,7 +88,7 @@ module.exports.updateUserAvatar = (req, res) => {
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return Users.findUserByCredentials(email, password)
     .then((user) => {
@@ -87,9 +96,7 @@ module.exports.login = (req, res) => {
         token: jwt.sign({ _id: user._id }, NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret', { expiresIn: '7d' }),
       });
     })
-    .catch(() => {
-      res.status(401).send({ message: 'Неправильные почта и пароль' });
-    });
+    .catch(next);
 };
 
 module.exports.getUser = (req, res) => {
