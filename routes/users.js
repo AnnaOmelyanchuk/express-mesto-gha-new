@@ -11,53 +11,74 @@ const {
   login,
 } = require('../controllers/users');
 
-const {
-  auth,
-} = require('../middlewares/auth');
-
 router.post('/signin', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string(),
+  }).unknown(true),
   body: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required(),
-  }).unknown(true),
+  }),
 }), login);
 
 router.post('/signup', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string(),
+  }).unknown(true),
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
+    avatar: Joi.string().pattern(new RegExp('^(http|https)://[^ "]+$')),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
-  }).unknown(true),
+  }),
 }),
 createUser);
 
-router.get('/users', auth, getUsers);
+router.get('/users', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string(),
+  }).unknown(true),
+  body: Joi.object().keys({
+
+  }),
+}), getUsers);
 
 router.get('/users/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-    avatar: Joi.string(),
-    email: Joi.string().required().email(),
-    password: Joi.string().required(),
+  headers: Joi.object().keys({
+    authorization: Joi.string(),
   }).unknown(true),
-}), auth, getUser);
+  body: Joi.object().keys({
 
-router.get('/users/:userId', auth, getUserById);
+  }),
+}), getUser);
+
+router.get('/users/:userId', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string(),
+  }).unknown(true),
+  body: Joi.object().keys({
+
+  }),
+}), getUserById);
 
 router.patch('/users/me', celebrate({
+  headers: Joi.object().keys({
+    authorization: Joi.string(),
+  }).unknown(true),
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     about: Joi.string().required().min(2).max(30),
-  }).unknown(true),
-}), auth, updateUserInfo);
+  }),
+}), updateUserInfo);
 
 router.patch('/users/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().required(),
+  headers: Joi.object().keys({
+    authorization: Joi.string(),
   }).unknown(true),
-}), auth, updateUserAvatar);
+  body: Joi.object().keys({
+    avatar: Joi.string().pattern(new RegExp('^(http|https)://[^ "]+$')),
+  }).unknown(true),
+}), updateUserAvatar);
 
 module.exports = router;

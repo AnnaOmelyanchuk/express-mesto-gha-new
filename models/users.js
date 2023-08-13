@@ -4,6 +4,11 @@ const bcrypt = require('bcryptjs');
 const UnauthorizedError = require('../error/unauthorized_error_401');
 
 const userSchema = new mongoose.Schema({
+  password: {
+    type: String,
+    required: [true, 'Обязательное поле'],
+    select: false,
+  },
   name:
   {
     type: String,
@@ -30,11 +35,6 @@ const userSchema = new mongoose.Schema({
     validate: {
       validator: (v) => /^(http|https):\/\/[^ "]+$/.test(v),
       message: 'ошибка в ссылке',
-    },
-    password: {
-      type: String,
-      required: [true, 'Обязательное поле'],
-      select: false,
     },
   },
 });

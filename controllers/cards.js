@@ -28,17 +28,16 @@ module.exports.createCard = (req, res) => {
 
 module.exports.deleteCard = (req, res) => {
   const userId = req.user._id;
-  Cards.findByIdAndRemove(
+  Cards.findById(
     req.params.cardId,
   )
-    .then((card) => {
-      if (card) {
-        if (card.owner._id === userId) {
-          return res.send({ data: card });
-        }
-        return res.status(403).send({ message: 'Не твоя карточка' });
-      }
-      return res.status(NotFoundError).send({ message: 'Нет такого id' });
+    .orFail()
+    .then(async (card) => {
+      const ownerId = card.owner._id.toString();
+      if (ownerId === userId) {
+        const element = await Cards.findByIdAndDelete(req.params.cardId);
+        res.send({ data: element });
+      } else res.status(403).send({ message: 'Не твоя карточка:(' });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {

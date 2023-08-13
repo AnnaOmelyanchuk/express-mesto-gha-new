@@ -39,16 +39,16 @@ module.exports.createUser = (req, res) => {
     res.status(new BadRequesError().statusCode).send({ message: 'Пароль не введен' });
   } else {
     bcrypt.hash(req.body.password, 10)
-      .then((hash) => {
-        Users.create({
-          name,
-          about,
-          avatar,
-          email,
-          password: hash,
-        });
+      .then((hash) => Users.create({
+        name,
+        about,
+        avatar,
+        email,
+        password: hash,
+      }))
+      .then((user) => {
+        res.send({ data: user });
       })
-      .then((user) => { res.send({ data: user }); })
       .catch((err) => {
         if (err.name === 'MongoError' || err.code === 11000) {
           res.status(409).send({ message: 'Указанный email уже занят' });
@@ -101,7 +101,7 @@ module.exports.login = (req, res, next) => {
 };
 
 module.exports.getUser = (req, res) => {
-  Users.findById(req.params.userId)
+  Users.findById(req.user._id)
     .then((user) => {
       if (!user) {
         res.status(new NotFoundError().statusCode).send({ message: `Нет такого пользователя - ${req.params.userId}` });
