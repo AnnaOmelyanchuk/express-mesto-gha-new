@@ -2,15 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require('dotenv').config();
-const { errors } = require('celebrate');
-const router = require('express').Router();
-const {
-  auth,
-} = require('./middlewares/auth');
+const helmet = require('helmet');
+const { auth } = require('./middlewares/auth');
+const NotFoundError = require('./error/not_found_error_404');
+const errorHandler = require('./middlewares/errorHandler');
 
 const { PORT = 3000 } = process.env;
 const app = express();
 app.listen(PORT);
+
+app.use(helmet());
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -20,19 +21,12 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
-router.use(auth);
 app.use('/', auth);
 app.use('/', require('./routes/cards'));
 app.use('/', require('./routes/users'));
 
-app.use(errors());
-
-app.use((err, req, res, next) => {
-  res.send({ message: err.message });
+app.use((req, res, next) => {
+  next(new NotFoundError('Не туда:('));
 });
 
-app.use((req, res) => {
-  res.status(404).json({
-    message: 'НЕ туда :((',
-  });
-});
+app.use(errorHandler);

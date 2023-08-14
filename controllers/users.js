@@ -7,36 +7,38 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 
 const BadRequesError = require('../error/bad_request_error_400');
 const NotFoundError = require('../error/not_found_error_404');
-const ServerError = require('../error/server_error_500');
+const ConflictError = require('../error/conflict_error-409');
 
-module.exports.getUsers = (req, res) => {
+module.exports.getUsers = (req, res, next) => {
   Users.find({})
     .then((users) => res.send({ data: users }))
-    .catch(() => res.status(ServerError).send({ message: 'Произошла ошибка' }));
+    .catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
-  Users.findById(req.params.userId)
+module.exports.getUserById = (req, res, next) => {
+  Users
+    .findById(req.params.userId)
     .then((user) => {
       if (user) {
         return res.send({ data: user });
       }
-      return res.status(new NotFoundError().statusCode).send({ message: 'Нет такого id' });
+      throw new NotFoundError('Нет пользователя с таким id');
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(BadRequesError).send({ message: 'Некорректный id' });
+        next(new BadRequesError('Некорректный id'));
+      } else {
+        next(err);
       }
-      return res.status(ServerError).send({ message: 'Произошла ошибка' });
     });
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const {
     name, about, avatar, email, password,
   } = req.body;
   if (!password) {
-    res.status(new BadRequesError().statusCode).send({ message: 'Пароль не введен' });
+    throw new BadRequesError('Пароль не введен');
   } else {
     bcrypt.hash(req.body.password, 10)
       .then((hash) => Users.create({
@@ -51,30 +53,29 @@ module.exports.createUser = (req, res) => {
       })
       .catch((err) => {
         if (err.name === 'MongoError' || err.code === 11000) {
-          res.status(409).send({ message: 'Указанный email уже занят' });
-          return;
+          next(new ConflictError('Указанный email уже занят'));
         }
         if (err instanceof mongoose.Error.ValidationError) {
-          res.status(new BadRequesError().statusCode).send({ message: 'Ошибка в данных' });
+          next(new BadRequesError('Ошибка в данных'));
         }
-        res.status(new ServerError().statusCode).send({ message: 'Произошла ошибка' });
+        next(err);
       });
   }
 };
 
-module.exports.updateUserInfo = (req, res) => {
+module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
   Users.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(new BadRequesError().statusCode).send({ message: 'Ошибка в данных' });
+        next(new BadRequesError('Ошибка в данных'));
       }
-      return res.status(new ServerError().statusCode).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
-module.exports.updateUserAvatar = (req, res) => {
+module.exports.updateUserAvatar = (req, res, next) => {
   Users.findByIdAndUpdate(
     req.user._id,
     { avatar: req.body.avatar },
@@ -83,9 +84,9 @@ module.exports.updateUserAvatar = (req, res) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
-        return res.status(new BadRequesError().statusCode).send({ message: 'Ошибка в данных' });
+        next(new BadRequesError('Ошибка в данных'));
       }
-      return res.status(new ServerError().statusCode).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
 
@@ -100,19 +101,18 @@ module.exports.login = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUser = (req, res) => {
+module.exports.getUser = (req, res, next) => {
   Users.findById(req.user._id)
     .then((user) => {
       if (!user) {
-        res.status(new NotFoundError().statusCode).send({ message: `Нет такого пользователя - ${req.params.userId}` });
-        return;
+        throw new BadRequesError('Нет такого пользователя');
       }
       res.send({ data: user });
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
-        return res.status(new BadRequesError().statusCode).send({ message: 'Некорректный id' });
+        next(new BadRequesError('Некорректный id'));
       }
-      return res.status(new ServerError().statusCode).send({ message: 'Произошла ошибка' });
+      next(err);
     });
 };
