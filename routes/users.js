@@ -68,8 +68,8 @@ router.patch('/users/me', celebrate({
     authorization: Joi.string(),
   }).unknown(true),
   body: Joi.object().keys({
-    name: Joi.string().required().min(2).max(30),
-    about: Joi.string().required().min(2).max(30),
+    name: Joi.string(),
+    about: Joi.string(),
   }),
 }), updateUserInfo);
 
