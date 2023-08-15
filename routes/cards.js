@@ -21,7 +21,7 @@ router.get('/cards', celebrate({
 router.delete('/cards/:cardId', celebrate({
   headers: Joi.object().keys({
     authorization: Joi.string(),
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().length(24).hex(),
   }).unknown(true),
   body: Joi.object().keys({
 
@@ -41,7 +41,7 @@ router.post('/cards', celebrate({
 router.put('/cards/:cardId/likes', celebrate({
   headers: Joi.object().keys({
     authorization: Joi.string(),
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().length(24).hex(),
   }).unknown(true),
   body: Joi.object().keys({
 
@@ -51,7 +51,7 @@ router.put('/cards/:cardId/likes', celebrate({
 router.delete('/cards/:cardId/likes', celebrate({
   headers: Joi.object().keys({
     authorization: Joi.string(),
-    cardId: Joi.string().alphanum().length(24),
+    cardId: Joi.string().length(24).hex(),
   }).unknown(true),
   body: Joi.object().keys({
 

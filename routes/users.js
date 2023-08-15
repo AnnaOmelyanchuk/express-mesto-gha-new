@@ -56,7 +56,7 @@ router.get('/users/me', celebrate({
 router.get('/users/:userId', celebrate({
   headers: Joi.object().keys({
     authorization: Joi.string(),
-    userId: Joi.string().alphanum().length(24),
+    userId: Joi.string().length(24).hex(),
   }).unknown(true),
   body: Joi.object().keys({
 
