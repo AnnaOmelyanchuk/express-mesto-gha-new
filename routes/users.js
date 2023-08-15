@@ -28,7 +28,7 @@ router.post('/signup', celebrate({
   body: Joi.object().keys({
     name: Joi.string().min(2).max(30),
     about: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(new RegExp('^(http|https)://[^ "]+$')),
+    avatar: Joi.string().pattern(new RegExp('^(http)s?://((?=.{3,253}$)((([^ ]){1,63}.[^ ]+)))$')),
     email: Joi.string().required().email(),
     password: Joi.string().required(),
   }),
@@ -56,6 +56,7 @@ router.get('/users/me', celebrate({
 router.get('/users/:userId', celebrate({
   headers: Joi.object().keys({
     authorization: Joi.string(),
+    userId: Joi.string().alphanum().length(24),
   }).unknown(true),
   body: Joi.object().keys({
 
@@ -77,7 +78,7 @@ router.patch('/users/me/avatar', celebrate({
     authorization: Joi.string(),
   }).unknown(true),
   body: Joi.object().keys({
-    avatar: Joi.string().pattern(new RegExp('^(http|https)://[^ "]+$')),
+    avatar: Joi.string().pattern(new RegExp('^(http)s?://((?=.{3,253}$)((([^ ]){1,63}.[^ ]+)))$')),
   }).unknown(true),
 }), updateUserAvatar);
 

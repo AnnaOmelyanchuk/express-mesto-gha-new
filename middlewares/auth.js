@@ -1,8 +1,6 @@
 const { NODE_ENV, JWT_SECRET } = process.env;
 const jwt = require('jsonwebtoken');
 
-const BadRequesError = require('../error/bad_request_error_400');
-const NotFoundError = require('../error/not_found_error_404');
 const UnauthorizedError = require('../error/unauthorized_error_401');
 
 // eslint-disable-next-line consistent-return

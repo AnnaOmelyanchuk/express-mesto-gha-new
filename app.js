@@ -6,10 +6,10 @@ const helmet = require('helmet');
 const { auth } = require('./middlewares/auth');
 const NotFoundError = require('./error/not_found_error_404');
 const errorHandler = require('./middlewares/errorHandler');
+const { login, createUser } = require('./controllers/users');
 
 const { PORT = 3000 } = process.env;
 const app = express();
-app.listen(PORT);
 
 app.use(helmet());
 
@@ -21,6 +21,9 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+app.post('/signin', login);
+app.post('/signup', createUser);
+
 app.use('/', auth);
 app.use('/', require('./routes/cards'));
 app.use('/', require('./routes/users'));
@@ -30,3 +33,5 @@ app.use((req, res, next) => {
 });
 
 app.use(errorHandler);
+
+app.listen(PORT);

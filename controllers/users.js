@@ -54,9 +54,11 @@ module.exports.createUser = (req, res, next) => {
       .catch((err) => {
         if (err.name === 'MongoError' || err.code === 11000) {
           next(new ConflictError('Указанный email уже занят'));
+          return;
         }
         if (err instanceof mongoose.Error.ValidationError) {
           next(new BadRequesError('Ошибка в данных'));
+          return;
         }
         next(err);
       });
@@ -70,6 +72,7 @@ module.exports.updateUserInfo = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequesError('Ошибка в данных'));
+        return;
       }
       next(err);
     });
@@ -85,6 +88,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequesError('Ошибка в данных'));
+        return;
       }
       next(err);
     });
@@ -112,6 +116,7 @@ module.exports.getUser = (req, res, next) => {
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
         next(new BadRequesError('Некорректный id'));
+        return;
       }
       next(err);
     });
