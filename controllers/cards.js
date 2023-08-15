@@ -32,11 +32,13 @@ module.exports.deleteCard = (req, res, next) => {
   Cards.findById(
     req.params.cardId,
   )
-    .orFail()
     .then(async (card) => {
+      if (!card) {
+        throw new NotFoundError('Карточки с таким id не существует');
+      }
       const ownerId = card.owner._id.toString();
       if (ownerId === userId) {
-        const element = await Cards.findByIdAndDelete(req.params.cardId);
+        const element = await Cards.deleteOne(card);
         res.send({ data: element });
       } else throw new ForbiddenError('Не твоя карточка:(');
     })
