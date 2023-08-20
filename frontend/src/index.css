@@ -41,6 +41,7 @@
 
 @import url(./blocks/popup/popup.css);
 @import url(./blocks/popup/__form/popup__form.css);
+@import url(./blocks/popup/__tooltip-image/popup__tooltip-image.css);
 @import url(./blocks/popup/__close-btn/popup__close-btn.css);
 @import url(./blocks/popup/__close-btn/_place/popup__close-btn_place_form.css);
 @import url(./blocks/popup/__close-btn/_place/popup__close-btn_place_image.css);
@@ -51,6 +52,7 @@
 @import url(./blocks/popup/__save-btn/popup__save-btn.css);
 @import url(./blocks/popup/__save-btn/_place/popup__save-btn_place_login-register.css);
 @import url(./blocks/popup/__title/popup__title.css);
+@import url(./blocks/popup/__title/_place/popup__title_place_popupinfo.css);
 @import url(./blocks/popup/_opened/popup_opened.css);
 @import url(./blocks/popup/__reletive-block/popup__reletive-block.css);
 @import url(./blocks/popup/__reletive-block/_place/popup__reletive-block_place_login-register.css);

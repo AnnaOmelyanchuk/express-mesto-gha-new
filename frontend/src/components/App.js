@@ -11,9 +11,12 @@ import ImagePopup from './ImagePopup'
 import PopupInfo from './PopupInfo'
 import { api as api } from '../utils/Api'
 import { CurrentUserContext } from '../contexts/CurrentUserContext'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useNavigate } from 'react-router-dom'
 import Register from './Register'
 import Login from './Login'
+import ProtectedRouteElement from "./ProtectedRoute"; // импортируем HOC
+import * as auth from '../MestoAuth';
+
 
 
 function App() {
@@ -23,12 +26,25 @@ function App() {
   const [isEditAvatarPopupOpen, setIsEditAvatarPopupOpen] = React.useState(false);
   const [isImagePopupOpen, setImagePopupOpen] = React.useState(false);
   const [isConfirmPopupOpen, setIsConfirmPopupOpen] = React.useState(false);
+  const [isInfoOpen, setIsInfoPopupOpen] = React.useState(false);
+  const navigate = useNavigate();
   const [selectedCard, setSelectedCard] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
   const [cardsForDelete, setCardsForDelete] = React.useState();
   const [loadingCaption, setLoadingCaption] = React.useState(true);
   const [headerCaption, setHeaderCaption] = React.useState({ text: '', link: '', email: '' });
+  const [loggedIn, setLoggedIn] = React.useState(false);
+  const handleLogin = () => {
+    setLoggedIn(true);
+  }
+
+  const handleSignOut = () => {
+    localStorage.removeItem('jwt');
+    navigate("/singin", { replace: true })
+    setLoggedIn(false)
+  }
+
 
   function handleEditAvatarClick() {
     setIsEditAvatarPopupOpen(true)
@@ -54,7 +70,10 @@ function App() {
     setIsEditProfilePopupOpen(false)
     setIsConfirmPopupOpen(false)
     setImagePopupOpen(false)
+    setIsInfoPopupOpen(false)
+    setIsConfirmPopupOpen(false)
     setSelectedCard({})
+
   }
 
   function handleCardClick(e) {
@@ -125,6 +144,29 @@ function App() {
   }
 
   React.useEffect(() => {
+    handleTokenCheck();
+  }, [])
+
+  const handleTokenCheck = () => {
+    if (localStorage.getItem('jwt')) {
+      const jwt = localStorage.getItem('jwt');
+      auth.checkToken(jwt).then((res) => {
+        if (res) {
+          setHeaderCaption({
+            text: 'Выйти',
+            link: '/signin',
+            email: res.data.email
+          })
+          setLoggedIn(true);
+          navigate("/mesto", { replace: true })
+        }
+
+      });
+    }
+  }
+
+
+  React.useEffect(() => {
     function handleEscClose(e) {
       if (e.key === 'Escape') {
         closeAllPopups();
@@ -147,16 +189,19 @@ function App() {
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
-        <Header textHeader={headerCaption.text} link={headerCaption.link} email={headerCaption.email} />
+        {console.log(headerCaption)}
+        <Header textHeader={headerCaption.text} link={headerCaption.link} email={headerCaption.email} handleSignOut={handleSignOut} />
         <Routes>
 
-          <Route path="/sing-up" element={<Register buttonText={loadingCaption ? 'Зарегистрироваться' : 'Регистрируюсь...'}
-            onSubmit={handleCardConfirmDelete} setHeaderCaption={setHeaderCaption}  title="Регистрация" />} />
+          <Route path="/" element={loggedIn ? <Navigate to="/mesto" replace /> : <Navigate to="/signin" replace />} />
 
-          <Route path="/sing-in" element={<Login buttonText={loadingCaption ? 'Войти' : 'Вхожу...'} name="confirm" title="Вход"
-            onSubmit={handleCardConfirmDelete} setHeaderCaption={setHeaderCaption} />} />
+          <Route path="/signup" element={<Register buttonText={loadingCaption ? 'Зарегистрироваться' : 'Регистрируюсь...'}
+            onSubmit={handleCardConfirmDelete} setHeaderCaption={setHeaderCaption} title="Регистрация" />} />
 
-          <Route path="/" element={<Main
+          <Route path="/signin" element={<Login buttonText={loadingCaption ? 'Войти' : 'Вхожу...'} name="confirm" title="Вход"
+            onSubmit={handleCardConfirmDelete} setHeaderCaption={setHeaderCaption} handleLogin={handleLogin} />} />
+
+          <Route path="/mesto" element={<ProtectedRouteElement element={Main} loggedIn={loggedIn} setHeaderCaption={setHeaderCaption} headerCaption={headerCaption}
             onEditProfile={handleEditProfileClick}
             onAddPlace={handleAddPlaceClick}
             onEditAvatar={handleEditAvatarClick}
@@ -184,7 +229,7 @@ function App() {
 
         <ImagePopup isOpen={isImagePopupOpen} onClosePopup={closeAllPopups} card={selectedCard} onClosePopupByAbroad={closeAllPopupsByAbroad} />
 
-<PopupInfo Вы успешно title="Вы успешно зарегистрировались!"></PopupInfo>
+        <PopupInfo isOpen={isInfoOpen} onClosePopup={closeAllPopups} onClosePopupByAbroad={closeAllPopupsByAbroad} title="Вы успешно зарегистрировались!"></PopupInfo>
         <Footer />
 
       </CurrentUserContext.Provider>

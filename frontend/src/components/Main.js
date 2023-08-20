@@ -3,7 +3,11 @@ import React from 'react'
 import Card from '../components/Card'
 import { CurrentUserContext } from '../contexts/CurrentUserContext'
 
-function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, cards, onCardDelete }) {
+function Main({headerCaption, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, cards, onCardDelete, setHeaderCaption }) {
+
+    React.useEffect(() => {
+        setHeaderCaption(headerCaption)
+    }, []);
 
     const currentUser = React.useContext(CurrentUserContext);
 
