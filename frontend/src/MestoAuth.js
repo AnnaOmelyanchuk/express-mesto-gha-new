@@ -1,5 +1,5 @@
 
-export const BASE_URL = 'https://auth.nomoreparties.co';
+export const BASE_URL = 'http://api.Anyamesto.nomoreparties.co/';
 
 export const register = (password, email) => {
     return fetch(`${BASE_URL}/signup`, {
