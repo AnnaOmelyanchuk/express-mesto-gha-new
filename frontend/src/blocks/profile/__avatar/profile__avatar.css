@@ -1,0 +1,21 @@
+.profile__avatar {
+  width: 110px;
+  position: relative;
+  border-radius: 1000px;
+}
+
+@media (max-width: 1023px) {
+  .profile__avatar {
+    margin: 0 auto 26px auto;
+  }
+}
+
+
+
+.profile__avatar:hover:before {
+  position: absolute;
+  content: url("../../../images/buttons/edit_avatar.svg");
+  left: 47px;
+  top: 38%;
+  vertical-align: middle;
+}

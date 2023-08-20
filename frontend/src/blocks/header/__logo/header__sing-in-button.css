@@ -1,0 +1,12 @@
+.header__sing-in-button {
+    max-width: 114px;
+    margin: 0;
+    text-decoration: none;
+    font-family: var(--primary-font);
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 22px;
+    color: var(--primary-text-color);
+  }
+  

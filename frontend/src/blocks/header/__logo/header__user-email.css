@@ -1,0 +1,15 @@
+.header__user-email {
+    max-width: 141px;
+    margin: 0;
+    text-decoration: none;
+    font-family: var(--primary-font);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+    color: var(--primary-text-color);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  

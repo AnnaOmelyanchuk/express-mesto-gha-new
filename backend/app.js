@@ -7,6 +7,7 @@ const { auth } = require('./middlewares/auth');
 const NotFoundError = require('./error/not_found_error_404');
 const errorHandler = require('./middlewares/errorHandler');
 const { login, createUser } = require('./controllers/users');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -21,12 +22,16 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   useUnifiedTopology: true,
 });
 
+app.use(requestLogger);
+
 app.post('/signin', login);
 app.post('/signup', createUser);
 
 app.use('/', auth);
 app.use('/', require('./routes/cards'));
 app.use('/', require('./routes/users'));
+
+app.use(errorLogger);
 
 app.use((req, res, next) => {
   next(new NotFoundError('Не туда:('));

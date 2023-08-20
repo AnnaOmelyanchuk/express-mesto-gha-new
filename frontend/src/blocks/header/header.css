@@ -1,0 +1,15 @@
+.header {
+  display: flex;
+  margin: 45px 200px 0 200px;
+  padding-bottom: 41px;
+  border-bottom: 1px solid #545454b3;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+@media (max-width: 1280px) {
+  .header {
+    margin: calc(28px + ((-320px + 100vw) * 0.0177)) calc((-320px + 100vw) * 0.208) 0 calc((-320px + 100vw) * 0.208);
+    padding-bottom: calc(31.6px + ((-320px + 100vw) * 0.0097));
+  }
+}
