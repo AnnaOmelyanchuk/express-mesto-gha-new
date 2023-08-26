@@ -14,3 +14,8 @@
 
 `npm run start` — запускает сервер   
 `npm run dev` — запускает сервер с hot-reload
+
+## Адрес проекта
+IP  158.160.106.127
+Frontend  https://anyamesto.nomoreparties.co/mesto
+Backend  https://api.anyamesto.nomoreparties.co/mesto
