@@ -1,8 +1,10 @@
 const express = require('express');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const helmet = require('helmet');
+const cors = require('cors');
 const { auth } = require('./middlewares/auth');
 const NotFoundError = require('./error/not_found_error_404');
 const errorHandler = require('./middlewares/errorHandler');
@@ -23,6 +25,14 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
 });
 
 app.use(requestLogger);
+
+app.use(cors());
+
+app.get('/crash-test', () => {
+  setTimeout(() => {
+    throw new Error('Сервер сейчас упадёт');
+  }, 0);
+});
 
 app.post('/signin', login);
 app.post('/signup', createUser);
