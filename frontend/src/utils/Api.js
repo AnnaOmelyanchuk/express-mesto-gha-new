@@ -116,11 +116,11 @@ class Api {
 }
 
 const api = new Api({
-  baseUrl: 'https://nomoreparties.co/v1/cohort-66/users/me',
-  cardUrl: 'https://mesto.nomoreparties.co/v1/cohort-66/cards',
-  avatarUrl: `https://mesto.nomoreparties.co/v1/cohort-66/users/me/avatar`,
-  baseUrl: 'https://nomoreparties.co/v1/cohort-66/users/me',
-  headers: { authorization: '96a78f06-11d7-4e34-a9b2-cad17675fa32' }
+  baseUrl: 'https://api.Anyamesto.nomoreparties.co/users/me',
+  cardUrl: 'https://api.Anyamesto.nomoreparties.co/cards',
+  avatarUrl: `https://api.Anyamesto.nomoreparties.co/users/me/avatar`,
+  baseUrl: 'https://api.Anyamesto.nomoreparties.co/users/me',
+  headers: { authorization: `Bearer ${localStorage.getItem('jwt')}` }
 });
 
 export { api };

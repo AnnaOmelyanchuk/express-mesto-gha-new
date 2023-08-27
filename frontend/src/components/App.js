@@ -35,12 +35,14 @@ function App() {
   const [loadingCaption, setLoadingCaption] = React.useState(true);
   const [headerCaption, setHeaderCaption] = React.useState({ text: '', link: '', email: '' });
   const [loggedIn, setLoggedIn] = React.useState(false);
+
   const handleLogin = () => {
     setLoggedIn(true);
   }
 
   const handleSignOut = () => {
     localStorage.removeItem('jwt');
+    console.log(localStorage.getItem('jwt'));
     navigate("/singin", { replace: true })
     setLoggedIn(false)
   }
@@ -82,7 +84,7 @@ function App() {
   }
 
   function handleCardLike(card) {
-    const isLiked = card.likes.some(i => i._id === currentUser._id);
+    const isLiked = card.likes.some(i => i === currentUser._id);
     api.changeLikeCardStatus(card, isLiked).then((newCard) => {
       setCards((cards) => cards.map((c) => c._id === card._id ? newCard : c));
     })
@@ -155,9 +157,8 @@ function App() {
           setHeaderCaption({
             text: 'Выйти',
             link: '/signin',
-            email: res.data.email
+            email: res.email
           })
-          setLoggedIn(true);
           navigate("/mesto", { replace: true })
         }
 
@@ -183,13 +184,12 @@ function App() {
         setCards(cardsData)
       })
       .catch(err => console.log(`Ошибка.....: ${err}`));
-  }, []
+  }, [loggedIn]
   );
 
   return (
     <>
       <CurrentUserContext.Provider value={currentUser}>
-        {console.log(headerCaption)}
         <Header textHeader={headerCaption.text} link={headerCaption.link} email={headerCaption.email} handleSignOut={handleSignOut} />
         <Routes>
 

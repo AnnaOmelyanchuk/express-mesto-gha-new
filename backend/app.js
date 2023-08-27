@@ -1,8 +1,9 @@
-const express = require('express');
 require('dotenv').config();
+
+console.log(process.env);
+const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-require('dotenv').config();
 const helmet = require('helmet');
 const cors = require('cors');
 const { auth } = require('./middlewares/auth');

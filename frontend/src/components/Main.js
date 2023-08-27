@@ -3,7 +3,7 @@ import React from 'react'
 import Card from '../components/Card'
 import { CurrentUserContext } from '../contexts/CurrentUserContext'
 
-function Main({headerCaption, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, cards, onCardDelete, setHeaderCaption }) {
+function Main({ headerCaption, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, cards, onCardDelete, setHeaderCaption }) {
 
     React.useEffect(() => {
         setHeaderCaption(headerCaption)
@@ -32,9 +32,8 @@ function Main({headerCaption, onEditAvatar, onEditProfile, onAddPlace, onCardCli
                     </ul>
                 </section>
             </main>
-        </>
+        </> 
     );
 }
-
 export default Main;
 

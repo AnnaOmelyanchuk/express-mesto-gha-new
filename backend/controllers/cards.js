@@ -7,7 +7,7 @@ const ForbiddenError = require('../error/forbidden-error_403');
 
 module.exports.getCards = (req, res, next) => {
   Cards.find({})
-    .then((cards) => res.send({ data: cards }))
+    .then((cards) => res.send(cards))
     .catch(next);
 };
 
@@ -17,7 +17,7 @@ module.exports.createCard = (req, res, next) => {
     link: req.body.link,
     owner: req.user._id,
   })
-    .then((card) => res.status(201).send({ data: card }))
+    .then((card) => res.status(201).send(card))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequesError('Ошибка в данных'));
@@ -36,7 +36,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (!card) {
         throw new NotFoundError('Карточки с таким id не существует');
       }
-      const ownerId = card.owner._id.toString();
+      const ownerId = card.owner.toString();
       if (ownerId === userId) {
         const element = await Cards.deleteOne(card);
         res.send({ data: element });
@@ -59,7 +59,7 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card) {
-        return res.send({ data: card });
+        return res.send(card);
       }
       throw new NotFoundError('Нет такой карточки');
     })
@@ -80,7 +80,7 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card) {
-        return res.send({ data: card });
+        return res.send(card);
       }
       throw new NotFoundError('Нет такой карточки');
     })

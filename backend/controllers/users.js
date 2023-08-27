@@ -11,7 +11,7 @@ const ConflictError = require('../error/conflict_error-409');
 
 module.exports.getUsers = (req, res, next) => {
   Users.find({})
-    .then((users) => res.send({ data: users }))
+    .then((users) => res.send(users))
     .catch(next);
 };
 
@@ -20,7 +20,7 @@ module.exports.getUserById = (req, res, next) => {
     .findById(req.params.userId)
     .then((user) => {
       if (user) {
-        return res.send({ data: user });
+        return res.send(user);
       }
       throw new NotFoundError('Нет пользователя с таким id');
     })
@@ -34,6 +34,7 @@ module.exports.getUserById = (req, res, next) => {
 };
 
 module.exports.createUser = (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
   const {
     name, about, avatar, email, password,
   } = req.body;
@@ -73,7 +74,7 @@ module.exports.createUser = (req, res, next) => {
 module.exports.updateUserInfo = (req, res, next) => {
   const { name, about } = req.body;
   Users.findByIdAndUpdate(req.user._id, { name, about }, { new: true, runValidators: true })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequesError('Ошибка в данных'));
@@ -89,7 +90,7 @@ module.exports.updateUserAvatar = (req, res, next) => {
     { avatar: req.body.avatar },
     { new: true, runValidators: true },
   )
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send(user))
     .catch((err) => {
       if (err instanceof mongoose.Error.ValidationError) {
         next(new BadRequesError('Ошибка в данных'));
@@ -116,7 +117,8 @@ module.exports.getUser = (req, res, next) => {
       if (!user) {
         throw new BadRequesError('Нет такого пользователя');
       }
-      res.send({ data: user });
+
+      res.send(user);
     })
     .catch((err) => {
       if (err instanceof mongoose.Error.CastError) {
