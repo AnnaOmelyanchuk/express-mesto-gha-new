@@ -1,0 +1,12 @@
+  .page {
+    max-width: 1280px;
+    margin: auto;
+    font-family: var(--primary-font);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    background: var(--primary-background-page);
+  }

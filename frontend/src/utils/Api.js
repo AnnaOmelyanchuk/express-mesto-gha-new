@@ -7,6 +7,7 @@ class Api {
   }
 
   _checkResponse(res) {
+    console.log(res);
     if (res.ok) {
       return res.json();
     }
@@ -20,7 +21,7 @@ class Api {
   getUserInformationMe() {
     return this._request(this.baseUrl, {
       headers: {
-        authorization: this.headers.authorization
+     authorization: `Bearer ${localStorage.getItem('jwt')}` 
       }
     })
   }
@@ -28,7 +29,8 @@ class Api {
   getInitialCardsSection() {
     return this._request(this.cardUrl, {
       headers: {
-        authorization: this.headers.authorization,
+      authorization: `Bearer ${localStorage.getItem('jwt')}` 
+        
       }
     })
   }
@@ -37,7 +39,7 @@ class Api {
     return this._request(this.baseUrl, {
       method: 'PATCH',
       headers: {
-        authorization: this.headers.authorization,
+        authorization: `Bearer ${localStorage.getItem('jwt')}` ,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -51,7 +53,7 @@ class Api {
     return this._request(this.avatarUrl, {
       method: 'PATCH',
       headers: {
-        authorization: this.headers.authorization,
+        authorization: `Bearer ${localStorage.getItem('jwt')}` ,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -64,7 +66,7 @@ class Api {
     return this._request(`${this.cardUrl}/${data._id}`, {
       method: 'DELETE',
       headers: {
-        authorization: this.headers.authorization,
+        authorization: `Bearer ${localStorage.getItem('jwt')}` ,
         'Content-Type': 'application/json'
       },
     })
@@ -74,7 +76,7 @@ class Api {
     return this._request(this.cardUrl, {
       method: 'POST',
       headers: {
-        authorization: this.headers.authorization,
+        authorization: `Bearer ${localStorage.getItem('jwt')}` ,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
@@ -88,7 +90,7 @@ class Api {
     return this._request(`${this.cardUrl}/${data._id}/likes`, {
       method: 'DELETE',
       headers: {
-        authorization: this.headers.authorization,
+        authorization: `Bearer ${localStorage.getItem('jwt')}` ,
         'Content-Type': 'application/json'
       },
     })
@@ -98,7 +100,7 @@ class Api {
     return this._request(`${this.cardUrl}/${data._id}/likes`, {
       method: 'PUT',
       headers: {
-        authorization: this.headers.authorization,
+        authorization: `Bearer ${localStorage.getItem('jwt')}` ,
         'Content-Type': 'application/json'
       },
     })
@@ -114,13 +116,18 @@ class Api {
   }
 
 }
+/*
+const api = new Api({
+  baseUrl: 'http://localhost:3000/users/me',
+  cardUrl: 'http://localhost:3000/cards',
+  avatarUrl: `http://localhost:3000/users/me/avatar`,
+
+});*/
 
 const api = new Api({
-  baseUrl: 'https://api.Anyamesto.nomoreparties.co/users/me',
-  cardUrl: 'https://api.Anyamesto.nomoreparties.co/cards',
-  avatarUrl: `https://api.Anyamesto.nomoreparties.co/users/me/avatar`,
-  baseUrl: 'https://api.Anyamesto.nomoreparties.co/users/me',
-  headers: { authorization: `Bearer ${localStorage.getItem('jwt')}` }
+  baseUrl: 'https://api.anyamesto.nomoreparties.co/users/me',
+  cardUrl: 'https://api.anyamesto.nomoreparties.co/cards',
+  avatarUrl: `https://api.anyamesto.nomoreparties.co/users/me/avatar`,
 });
 
 export { api };

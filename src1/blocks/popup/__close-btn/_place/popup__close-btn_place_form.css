@@ -1,0 +1,11 @@
+.popup__close-btn_place_form {
+  bottom: 103%;
+  left: 103%;
+}
+
+@media (max-width: 720px) {
+  .popup__close-btn_place_form {
+    bottom: calc(101% + ((-320px + 100vh) * 0.02));
+    left: calc(90% + ((-320px + 100vw) * 0.125));
+  }
+}

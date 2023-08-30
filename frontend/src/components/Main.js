@@ -3,13 +3,11 @@ import React from 'react'
 import Card from '../components/Card'
 import { CurrentUserContext } from '../contexts/CurrentUserContext'
 
-function Main({ headerCaption, onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, cards, onCardDelete, setHeaderCaption }) {
 
-    React.useEffect(() => {
-        setHeaderCaption(headerCaption)
-    }, []);
+function Main({ onEditAvatar, onEditProfile, onAddPlace, onCardClick, onCardLike, cards, onCardDelete }) {
 
     const currentUser = React.useContext(CurrentUserContext);
+
 
     return (
         <>
@@ -32,8 +30,9 @@ function Main({ headerCaption, onEditAvatar, onEditProfile, onAddPlace, onCardCl
                     </ul>
                 </section>
             </main>
-        </> 
+        </>
     );
 }
+
 export default Main;
 

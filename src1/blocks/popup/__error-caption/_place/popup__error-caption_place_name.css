@@ -1,0 +1,3 @@
+.popup__error-caption_place_name::before {
+  content: attr(erorMessage);
+}

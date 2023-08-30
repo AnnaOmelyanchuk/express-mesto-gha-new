@@ -1,0 +1,6 @@
+.header__personal {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    gap: 24px;
+}

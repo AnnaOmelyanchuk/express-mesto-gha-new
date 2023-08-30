@@ -1,0 +1,17 @@
+.popup__container {
+  margin: 0;
+  width: 430px;
+  background-color: var(--background-editForm-color);
+  border-radius: 10px;
+  display: flex;
+  flex-flow: column;
+  position: relative;
+}
+
+@media (max-width: 1023px) {
+  .popup__container {
+    width: calc(282px + ((-320px + 100vw) * 0.21));
+    right: calc(10px + ((-320px + 100vw) * 0.0085));
+  }
+}
+

@@ -5,6 +5,7 @@ const UnauthorizedError = require('../error/unauthorized_error_401');
 
 // eslint-disable-next-line consistent-return
 module.exports.auth = (req, res, next) => {
+  console.log(req.authorization);
   const { authorization } = req.headers;
   if (!authorization || !authorization.startsWith('Bearer ')) {
     throw new UnauthorizedError('Необходима авторизация');
@@ -19,7 +20,6 @@ module.exports.auth = (req, res, next) => {
     res.clearCookie('jwt');
     throw new UnauthorizedError('Необходима авторизация');
   }
-
   req.user = payload;
   next();
 };
