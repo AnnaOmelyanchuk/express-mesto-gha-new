@@ -40,11 +40,11 @@ app.use('/', auth);
 app.use('/', require('./routes/cards'));
 app.use('/', require('./routes/users'));
 
-app.use(errorLogger);
-
 app.use((req, res, next) => {
   next(new NotFoundError('Не туда:('));
 });
+
+app.use(errorLogger);
 
 app.use(errorHandler);
 
