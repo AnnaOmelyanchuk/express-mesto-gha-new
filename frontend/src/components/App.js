@@ -150,7 +150,7 @@ function App() {
   useEffect(() => {
     handleTokenCheck();
 
-
+console.log(loggedIn)
   }, [])
 
   const handleTokenCheck = () => {
@@ -158,6 +158,7 @@ function App() {
     if (jwt) {
       auth.checkToken(jwt).then((res) => {
         if (res) {
+          setLoggedIn(true);
           setHeaderCaption({
             text: 'Выйти',
             link: '/signin',
@@ -191,8 +192,10 @@ function App() {
     Promise
       .all([api.getUserInformationMe(), api.getInitialCardsSection()])
       .then(([userData, cardsData]) => {
+        setLoggedIn(true);
         setCurrentUser(userData)
         setCards(cardsData)
+
       })
       .catch(err => console.log(`Ошибка.....: ${err}`));
   }

@@ -1,9 +1,0 @@
-.footer {
-  margin: 67px auto 0 200px;
-}
-
-@media (max-width: 1280px) {
-  .footer {
-    margin: calc(48px + ((-320px + 100vw) * 0.019)) auto 36px calc(19px + ((-320px + 100vw) * 0.188));
-  }
-}

@@ -1,15 +1,12 @@
 
 export const BASE_URL = //'http://localhost:3000';
-'https://api.anyamesto.nomoreparties.co';
+    'https://api.anyamesto.nomoreparties.co';
 //'https://auth.nomoreparties.co';
 
 function _checkResponse(res) {
-    console.log(res)
     if (!res.ok) {
         return Promise.reject(`Ошибка ${res.status}`);
     }
-
-    console.log(res.body);
     return res.json();
 }
 
